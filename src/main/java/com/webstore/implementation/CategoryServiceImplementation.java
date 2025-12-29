@@ -36,4 +36,17 @@ public class CategoryServiceImplementation implements CategoryService {
         return "Category with categoryId: " + categoryId + " has been deleted";
 
     }
+
+    @Override
+    public String updateCategory(Category responseCategory) {
+        Category category = categories.stream()
+                .filter(c -> c.getCategoryId().equals(responseCategory.getCategoryId()))
+                .findFirst().
+                orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
+
+        int index = categories.indexOf(category);
+
+        categories.set(index, responseCategory);
+        return "Category updated successfully";
+    }
 }
