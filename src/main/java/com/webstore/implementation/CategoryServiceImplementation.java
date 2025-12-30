@@ -29,32 +29,22 @@ public class CategoryServiceImplementation implements CategoryService {
 
     @Override
     public String deleteCategory(Long categoryId) {
-        List<Category> categories = categoryRepository.findAll();
-        Category category = categories.stream()
-                .filter(c -> c.getCategoryId().equals(categoryId))
-                .findFirst().
-                orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
-
-        categoryRepository.delete(category);
-        return "Category with categoryId: " + categoryId + " has been deleted";
-
+        Optional<Category> category = categoryRepository.findById(categoryId);
+        if (category.isPresent()) {
+            Category deleteCategory = category.get();
+            categoryRepository.delete(deleteCategory);
+            return "Category with categoryId: " + categoryId + " has been deleted";
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category with id: " + categoryId + " was not found");
+        }
     }
 
     @Override
     public String updateCategory(Category responseCategory) {
-        List<Category> categories = categoryRepository.findAll();
-        Optional<Category> category = categories.stream()
-                .filter(c -> c.getCategoryId().equals(responseCategory.getCategoryId()))
-                .findFirst();
+        Category category = categoryRepository.findById(responseCategory.getCategoryId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category with categoryId: " + responseCategory.getCategoryId() + " has been deleted"));
 
-        if (category.isPresent()) {
-            Category categoryToUpdate = category.get();
-            categoryToUpdate.setCategoryName(responseCategory.getCategoryName());
-            categoryRepository.save(categoryToUpdate);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found");
-        }
-
-        return "Category updated successfully";
+        category.setCategoryName(responseCategory.getCategoryName());
+        categoryRepository.save(category);
+        return "Category with categoryId: " + category.getCategoryId() + " has been updated";
     }
 }
