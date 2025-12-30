@@ -1,11 +1,12 @@
 package com.webstore.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity(name = "categories")
 public class Category {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_seq")
+    @SequenceGenerator(name = "order_seq", sequenceName = "order_sequence", allocationSize = 1)
     private Long categoryId;
     private String categoryName;
 
