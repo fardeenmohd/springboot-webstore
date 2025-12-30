@@ -1,13 +1,13 @@
-package com.bank;
+package com.users;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BankApplication {
+public class UsersApplication {
     public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(BankApplication.class);
-        app.setAdditionalProfiles("bank");
+        SpringApplication app = new SpringApplication(UsersApplication.class);
+        app.setAdditionalProfiles("users");
         app.run(args);
     }
 }
