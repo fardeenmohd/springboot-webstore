@@ -12,4 +12,7 @@ public interface UserService {
     User getUserById(Long userId);
 
     String deleteUser(Long userId);
+
+    User updateUser(User user);
+
 }

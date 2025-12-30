@@ -38,4 +38,11 @@ public class UserServiceImplementation implements UserService {
         userRepository.deleteById(userId);
         return "User with id: " + userId + " has been deleted.";
     }
+
+    @Override
+    public User updateUser(User user) {
+        User updatedUser = userRepository.findById(user.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        userRepository.save(user);
+        return updatedUser;
+    }
 }
