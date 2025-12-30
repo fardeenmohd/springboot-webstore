@@ -1,15 +1,14 @@
 package com.webstore.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity(name = "categories")
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "task_gen")
-    @TableGenerator(name = "task_gen", table = "id_gen",
-            pkColumnName = "gen_key", valueColumnName = "gen_value",
-            pkColumnValue = "task_id", allocationSize = 1
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
     private String categoryName;
 
