@@ -19,7 +19,12 @@ public class CategoryServiceImplementation implements CategoryService {
 
     @Override
     public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAll();
+        if (categories.isEmpty()) {
+            throw new ApiException("No categories found");
+        }
+
+        return categories;
     }
 
     @Override
@@ -27,7 +32,7 @@ public class CategoryServiceImplementation implements CategoryService {
         if (categoryRepository.findByCategoryName(category.getCategoryName()) != null) {
             throw new ApiException("Category already exists");
         }
-        
+
         categoryRepository.save(category);
     }
 
