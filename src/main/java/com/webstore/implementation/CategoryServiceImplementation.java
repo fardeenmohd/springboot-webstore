@@ -41,7 +41,7 @@ public class CategoryServiceImplementation implements CategoryService {
 
     @Override
     public String updateCategory(Category responseCategory) {
-        Category category = categoryRepository.findById(responseCategory.getCategoryId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category with categoryId: " + responseCategory.getCategoryId() + " has been deleted"));
+        Category category = categoryRepository.findById(responseCategory.getCategoryId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category with categoryId: " + responseCategory.getCategoryId() + " not found"));
 
         category.setCategoryName(responseCategory.getCategoryName());
         categoryRepository.save(category);
