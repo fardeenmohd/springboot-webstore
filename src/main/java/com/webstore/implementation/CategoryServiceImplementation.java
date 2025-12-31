@@ -1,12 +1,11 @@
 package com.webstore.implementation;
 
+import com.webstore.exceptions.ResourceNotFoundException;
 import com.webstore.model.Category;
 import com.webstore.repositories.CategoryRepository;
 import com.webstore.service.CategoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,13 +34,13 @@ public class CategoryServiceImplementation implements CategoryService {
             categoryRepository.delete(deleteCategory);
             return "Category with categoryId: " + categoryId + " has been deleted";
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category with id: " + categoryId + " was not found");
+            throw new ResourceNotFoundException("Category", "categoryId", categoryId);
         }
     }
 
     @Override
     public String updateCategory(Category responseCategory) {
-        Category category = categoryRepository.findById(responseCategory.getCategoryId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category with categoryId: " + responseCategory.getCategoryId() + " not found"));
+        Category category = categoryRepository.findById(responseCategory.getCategoryId()).orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", responseCategory.getCategoryId()));
 
         category.setCategoryName(responseCategory.getCategoryName());
         categoryRepository.save(category);

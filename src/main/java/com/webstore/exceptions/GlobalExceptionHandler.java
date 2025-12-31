@@ -6,7 +6,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,11 +25,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<Map<String, String>>(response, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<Map<String, String>> responseStatusException(ResponseStatusException e) {
-        Map<String, String> response = new HashMap<>();
-        response.put("error", e.getReason());
-
-        return new ResponseEntity<Map<String, String>>(response, e.getStatusCode());
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> responseStatusException(ResourceNotFoundException error) {
+        String message = error.getMessage();
+        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
 }
