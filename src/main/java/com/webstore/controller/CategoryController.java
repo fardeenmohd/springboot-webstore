@@ -1,6 +1,5 @@
 package com.webstore.controller;
 
-import com.webstore.model.Category;
 import com.webstore.payload.CategoryDTO;
 import com.webstore.payload.CategoryResponse;
 import com.webstore.service.CategoryService;
@@ -29,14 +28,14 @@ public class CategoryController {
     }
 
     @DeleteMapping("/admin/categories/{categoryId}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
-        String status = categoryService.deleteCategory(categoryId);
-        return ResponseEntity.ok(status);
+    public ResponseEntity<CategoryDTO> deleteCategory(@PathVariable Long categoryId) {
+        CategoryDTO deletedCategoryDTO = categoryService.deleteCategory(categoryId);
+        return ResponseEntity.ok(deletedCategoryDTO);
     }
 
     @PutMapping("/admin/categories")
-    public ResponseEntity<String> updateCategory(@Valid @RequestBody Category category) {
-        String status = categoryService.updateCategory(category);
-        return ResponseEntity.ok(status);
+    public ResponseEntity<CategoryDTO> updateCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
+        CategoryDTO updatedCategory = categoryService.updateCategory(categoryDTO);
+        return ResponseEntity.ok(updatedCategory);
     }
 }

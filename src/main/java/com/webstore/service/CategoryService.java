@@ -1,6 +1,5 @@
 package com.webstore.service;
 
-import com.webstore.model.Category;
 import com.webstore.payload.CategoryDTO;
 import com.webstore.payload.CategoryResponse;
 
@@ -9,7 +8,7 @@ public interface CategoryService {
 
     CategoryDTO createCategory(CategoryDTO categoryDTO);
 
-    String deleteCategory(Long categoryId);
+    CategoryDTO deleteCategory(Long categoryId);
 
-    String updateCategory(Category category);
+    CategoryDTO updateCategory(CategoryDTO categoryDTO);
 }
