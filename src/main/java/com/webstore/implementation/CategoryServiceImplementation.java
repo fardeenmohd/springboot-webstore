@@ -32,7 +32,7 @@ public class CategoryServiceImplementation implements CategoryService {
         Pageable pageDetails = PageRequest.of(pageNumber, pageSize);
         Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
         List<Category> categories = categoryPage.getContent();
-        
+
         if (categories.isEmpty()) {
             throw new ApiException("No categories found");
         }
@@ -43,6 +43,11 @@ public class CategoryServiceImplementation implements CategoryService {
 
         CategoryResponse categoryResponse = new CategoryResponse();
         categoryResponse.setContent(categoryDTOS);
+        categoryResponse.setPageNumber(categoryPage.getNumber());
+        categoryResponse.setPageSize(categoryPage.getSize());
+        categoryResponse.setTotalElements(categoryPage.getTotalElements());
+        categoryResponse.setTotalPages(categoryPage.getTotalPages());
+        categoryResponse.setLastPage(categoryPage.isLast());
 
         return categoryResponse;
     }
