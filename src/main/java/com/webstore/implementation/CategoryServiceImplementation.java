@@ -1,5 +1,6 @@
 package com.webstore.implementation;
 
+import com.webstore.exceptions.ApiException;
 import com.webstore.exceptions.ResourceNotFoundException;
 import com.webstore.model.Category;
 import com.webstore.repositories.CategoryRepository;
@@ -23,6 +24,10 @@ public class CategoryServiceImplementation implements CategoryService {
 
     @Override
     public void createCategory(Category category) {
+        if (categoryRepository.findByCategoryName(category.getCategoryName()) != null) {
+            throw new ApiException("Category already exists");
+        }
+        
         categoryRepository.save(category);
     }
 
@@ -42,6 +47,9 @@ public class CategoryServiceImplementation implements CategoryService {
     public String updateCategory(Category responseCategory) {
         Category category = categoryRepository.findById(responseCategory.getCategoryId()).orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", responseCategory.getCategoryId()));
 
+        if (categoryRepository.findByCategoryName(responseCategory.getCategoryName()) != null) {
+            throw new ApiException("Category already exists");
+        }
         category.setCategoryName(responseCategory.getCategoryName());
         categoryRepository.save(category);
         return "Category with categoryId: " + category.getCategoryId() + " has been updated";
