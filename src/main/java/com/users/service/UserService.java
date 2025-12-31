@@ -1,18 +1,18 @@
 package com.users.service;
 
-import com.users.model.User;
+import com.users.payload.UserDTO;
 
 import java.util.List;
 
 public interface UserService {
-    User createUser(User user);
+    UserDTO createUser(UserDTO userDTO);
 
-    List<User> getAllUsers();
+    List<UserDTO> getAllUsers(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
 
-    User getUserById(Long userId);
+    UserDTO getUserById(Long userId);
 
-    String deleteUser(Long userId);
+    UserDTO deleteUser(Long userId);
 
-    User updateUser(User user);
+    UserDTO updateUser(UserDTO userDTO);
 
 }
