@@ -1,13 +1,12 @@
 package com.users.service;
 
 import com.users.payload.UserDTO;
-
-import java.util.List;
+import com.users.payload.UserResponse;
 
 public interface UserService {
     UserDTO createUser(UserDTO userDTO);
 
-    List<UserDTO> getAllUsers(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
+    UserResponse getAllUsers(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
 
     UserDTO getUserById(Long userId);
 

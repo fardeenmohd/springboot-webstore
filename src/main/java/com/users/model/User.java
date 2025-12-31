@@ -1,6 +1,9 @@
 package com.users.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +19,9 @@ public class User {
     private String firstName;
     private String lastName;
     @Column(unique = true)
+    @NotBlank
+    @Email(message = "Invalid email format")
+    @Valid
     private String email;
     @Column(unique = true)
     private String phoneNumber;

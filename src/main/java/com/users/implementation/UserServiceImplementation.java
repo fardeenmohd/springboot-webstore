@@ -1,9 +1,12 @@
 package com.users.implementation;
 
+import com.users.exceptions.ApiException;
 import com.users.model.User;
 import com.users.payload.UserDTO;
+import com.users.payload.UserResponse;
 import com.users.repositories.UserRepository;
 import com.users.service.UserService;
+import com.webstore.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -28,13 +29,16 @@ public class UserServiceImplementation implements UserService {
     @Override
     public UserDTO createUser(UserDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
+        if (userRepository.findByEmail(userDTO.getEmail()) != null) {
+            throw new ApiException("User already exists");
+        }
         userRepository.save(user);
 
         return userDTO;
     }
 
     @Override
-    public List<UserDTO> getAllUsers(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+    public UserResponse getAllUsers(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
         Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
 
@@ -42,13 +46,16 @@ public class UserServiceImplementation implements UserService {
         List<User> users = userPages.getContent();
         List<UserDTO> userDTOS = users.stream().map((user) -> modelMapper.map(user, UserDTO.class)).toList();
 
-        return userDTOS;
+        UserResponse userResponse = new UserResponse();
+        userResponse.setContent(userDTOS);
+
+        return userResponse;
     }
 
     @Override
     public UserDTO getUserById(Long userId) {
         User fetchedUser = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
         UserDTO fetchedUserDTO = modelMapper.map(fetchedUser, UserDTO.class);
 
         return fetchedUserDTO;
@@ -56,7 +63,7 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public UserDTO deleteUser(Long userId) {
-        User deletedUser = userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + userId));
+        User deletedUser = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
         userRepository.deleteById(userId);
 
         UserDTO deletedUserDTO = modelMapper.map(deletedUser, UserDTO.class);
@@ -67,7 +74,10 @@ public class UserServiceImplementation implements UserService {
     @Override
     public UserDTO updateUser(UserDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
-        userRepository.findById(user.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        if (userRepository.findByEmail(userDTO.getEmail()) != null) {
+            throw new ApiException("User already exists");
+        }
+        userRepository.findById(user.getId()).orElseThrow(() -> new ResourceNotFoundException("User", "userId", user.getId()));
         userRepository.save(user);
 
         return userDTO;

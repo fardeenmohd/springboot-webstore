@@ -2,13 +2,12 @@ package com.users.controller;
 
 import com.users.config.AppConstants;
 import com.users.payload.UserDTO;
+import com.users.payload.UserResponse;
 import com.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -31,13 +30,13 @@ public class UserController {
     }
 
     @GetMapping("/admin/user")
-    public ResponseEntity<List<UserDTO>> getAllUsers(
+    public ResponseEntity<UserResponse> getAllUsers(
             @RequestParam(name = "pageNumber", required = false, defaultValue = AppConstants.PAGE_NUMBER) Integer pageNumber,
             @RequestParam(name = "pageSize", required = false, defaultValue = AppConstants.PAGE_SIZE) Integer pageSize,
             @RequestParam(name = "sortBy", required = false, defaultValue = AppConstants.SORT_BY) String sortBy,
             @RequestParam(name = "sortOrder", required = false, defaultValue = AppConstants.SORT_ORDER) String sortOrder) {
 
-        List<UserDTO> usersDTO = userService.getAllUsers(pageNumber, pageSize, sortBy, sortOrder);
+        UserResponse usersDTO = userService.getAllUsers(pageNumber, pageSize, sortBy, sortOrder);
 
         return ResponseEntity.ok(usersDTO);
     }
