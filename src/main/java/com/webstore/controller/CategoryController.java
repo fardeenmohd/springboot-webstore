@@ -6,7 +6,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -19,9 +18,7 @@ public class CategoryController {
 
     @GetMapping("/public/categories")
     public ResponseEntity<List<Category>> getAllCategories() {
-
         List<Category> categories = categoryService.getAllCategories();
-
         return ResponseEntity.ok(categories);
     }
 
@@ -33,24 +30,13 @@ public class CategoryController {
 
     @DeleteMapping("/admin/categories/{categoryId}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
-        try {
-            String status = categoryService.deleteCategory(categoryId);
-            return ResponseEntity.ok(status);
-        } catch (ResponseStatusException e) {
-            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
-        }
+        String status = categoryService.deleteCategory(categoryId);
+        return ResponseEntity.ok(status);
     }
 
     @PutMapping("/admin/categories")
-    public ResponseEntity<String> updateCategory(@RequestBody Category category) {
-        try {
-            String status = categoryService.updateCategory(category);
-
-            return ResponseEntity.ok(status);
-        } catch (ResponseStatusException e) {
-            return ResponseEntity.badRequest().body(e.getReason());
-        }
+    public ResponseEntity<String> updateCategory(@Valid @RequestBody Category category) {
+        String status = categoryService.updateCategory(category);
+        return ResponseEntity.ok(status);
     }
-
-
 }
