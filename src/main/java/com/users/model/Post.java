@@ -5,20 +5,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
-@Entity(name = "profiles")
+@Entity(name = "posts")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Profile {
+public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
+    private String title;
+    private String content;
 
-    @OneToOne
-    private User socialUser;
-
-    @OneToMany(mappedBy = "socialProfile")
-    private List<Post> socialPosts;
+    @ManyToOne
+    @JoinColumn(name = "social_profile_id", referencedColumnName = "id")
+    private Profile socialProfile;
 }
