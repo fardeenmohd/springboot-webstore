@@ -18,11 +18,17 @@ public class User {
     private Long id;
     private String firstName;
     private String lastName;
+
     @Column(unique = true)
     @NotBlank
     @Email(message = "Invalid email format")
     @Valid
     private String email;
+
     @Column(unique = true)
     private String phoneNumber;
+
+    @OneToOne(mappedBy = "socialUser")
+    @JoinColumn(name = "social_user_id", referencedColumnName = "id")
+    private Profile socialProfile;
 }
