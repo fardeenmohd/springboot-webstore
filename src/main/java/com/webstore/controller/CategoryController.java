@@ -1,13 +1,12 @@
 package com.webstore.controller;
 
 import com.webstore.model.Category;
+import com.webstore.payload.CategoryResponse;
 import com.webstore.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -17,9 +16,9 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/public/categories")
-    public ResponseEntity<List<Category>> getAllCategories() {
-        List<Category> categories = categoryService.getAllCategories();
-        return ResponseEntity.ok(categories);
+    public ResponseEntity<CategoryResponse> getAllCategories() {
+        CategoryResponse categoriesResponse = categoryService.getAllCategories();
+        return ResponseEntity.ok(categoriesResponse);
     }
 
     @PostMapping("/public/categories")

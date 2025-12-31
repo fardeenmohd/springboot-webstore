@@ -3,9 +3,13 @@ package com.webstore.implementation;
 import com.webstore.exceptions.ApiException;
 import com.webstore.exceptions.ResourceNotFoundException;
 import com.webstore.model.Category;
+import com.webstore.payload.CategoryDTO;
+import com.webstore.payload.CategoryResponse;
 import com.webstore.repositories.CategoryRepository;
 import com.webstore.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,16 +18,27 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImplementation implements CategoryService {
+    @Autowired
+    private ModelMapper modelMapper;
+
     private final CategoryRepository categoryRepository;
 
+
     @Override
-    public List<Category> getAllCategories() {
+    public CategoryResponse getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
         if (categories.isEmpty()) {
             throw new ApiException("No categories found");
         }
 
-        return categories;
+        List<CategoryDTO> categoryDTOS = categories.stream()
+                .map((category -> modelMapper.map(category, CategoryDTO.class)))
+                .toList();
+
+        CategoryResponse categoryResponse = new CategoryResponse();
+        categoryResponse.setContent(categoryDTOS);
+
+        return categoryResponse;
     }
 
     @Override

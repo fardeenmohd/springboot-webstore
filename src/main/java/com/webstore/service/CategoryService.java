@@ -1,11 +1,10 @@
 package com.webstore.service;
 
 import com.webstore.model.Category;
-
-import java.util.List;
+import com.webstore.payload.CategoryResponse;
 
 public interface CategoryService {
-    List<Category> getAllCategories();
+    CategoryResponse getAllCategories();
 
     void createCategory(Category category);
 
