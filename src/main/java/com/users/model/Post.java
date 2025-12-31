@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Entity(name = "posts")
 @Data
 @AllArgsConstructor
@@ -19,4 +21,9 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "social_profile_id", referencedColumnName = "id")
     private Profile socialProfile;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
