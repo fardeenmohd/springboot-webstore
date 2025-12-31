@@ -1,5 +1,6 @@
 package com.webstore.controller;
 
+import com.webstore.config.AppConstants;
 import com.webstore.payload.CategoryDTO;
 import com.webstore.payload.CategoryResponse;
 import com.webstore.service.CategoryService;
@@ -17,8 +18,8 @@ public class CategoryController {
 
     @GetMapping("/public/categories")
     public ResponseEntity<CategoryResponse> getAllCategories(
-            @RequestParam(name = "pageNumber", defaultValue = "0") Integer pageNumber,
-            @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
+            @RequestParam(name = AppConstants.PAGE_NUMBER, defaultValue = "0") Integer pageNumber,
+            @RequestParam(name = AppConstants.PAGE_SIZE, defaultValue = "10") Integer pageSize) {
         CategoryResponse categoriesResponse = categoryService.getAllCategories(pageNumber, pageSize);
         return ResponseEntity.ok(categoriesResponse);
     }
