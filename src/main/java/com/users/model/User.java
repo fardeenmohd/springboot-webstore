@@ -31,7 +31,7 @@ public class User {
     @Column(unique = true)
     private String phoneNumber;
 
-    @OneToOne(mappedBy = "socialUser")
+    @OneToOne(mappedBy = "socialUser", cascade = CascadeType.ALL)
     @JoinColumn(name = "social_user_id", referencedColumnName = "id")
     private Profile socialProfile;
 
@@ -42,4 +42,10 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "social_group")
     )
     private Set<Group> socialGroups = new HashSet<>();
+
+    public void setSocialProfile(Profile socialProfile) {
+        socialProfile.setSocialUser(this);
+        this.socialProfile = socialProfile;
+    }
+
 }
