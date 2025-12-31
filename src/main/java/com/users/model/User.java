@@ -8,9 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Entity(name = "users")
 @Data
 @NoArgsConstructor
@@ -34,14 +31,6 @@ public class User {
     @OneToOne(mappedBy = "socialUser", cascade = CascadeType.ALL)
     @JoinColumn(name = "social_user_id", referencedColumnName = "id")
     private Profile socialProfile;
-
-    @ManyToMany
-    @JoinTable(
-            name = "user_groups",
-            joinColumns = @JoinColumn(name = "social_user"),
-            inverseJoinColumns = @JoinColumn(name = "social_group")
-    )
-    private Set<Group> socialGroups = new HashSet<>();
 
     public void setSocialProfile(Profile socialProfile) {
         socialProfile.setSocialUser(this);

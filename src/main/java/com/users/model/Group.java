@@ -19,7 +19,7 @@ public class Group {
     private Long id;
 
     @ManyToMany(mappedBy = "socialGroups")
-    private Set<User> socialUsers = new HashSet<>();
+    private Set<Profile> socialProfiles = new HashSet<>();
 
     @Override
     public int hashCode() {

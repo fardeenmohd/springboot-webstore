@@ -6,7 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity(name = "profiles")
 @Data
@@ -21,6 +23,14 @@ public class Profile {
 
     @OneToOne
     private User socialUser;
+
+    @ManyToMany
+    @JoinTable(
+            name = "profile_groups",
+            joinColumns = @JoinColumn(name = "social_profile"),
+            inverseJoinColumns = @JoinColumn(name = "social_group")
+    )
+    private Set<Group> socialGroups = new HashSet<>();
 
     @OneToMany(mappedBy = "socialProfile")
     private List<Post> socialPosts = new ArrayList<>();
