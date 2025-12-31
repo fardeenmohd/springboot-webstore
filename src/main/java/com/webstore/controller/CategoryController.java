@@ -16,8 +16,10 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/public/categories")
-    public ResponseEntity<CategoryResponse> getAllCategories() {
-        CategoryResponse categoriesResponse = categoryService.getAllCategories();
+    public ResponseEntity<CategoryResponse> getAllCategories(
+            @RequestParam(name = "pageNumber", defaultValue = "0") Integer pageNumber,
+            @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
+        CategoryResponse categoriesResponse = categoryService.getAllCategories(pageNumber, pageSize);
         return ResponseEntity.ok(categoriesResponse);
     }
 
