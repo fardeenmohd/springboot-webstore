@@ -1,6 +1,7 @@
 package com.webstore.controller;
 
 import com.webstore.model.Category;
+import com.webstore.payload.CategoryDTO;
 import com.webstore.payload.CategoryResponse;
 import com.webstore.service.CategoryService;
 import jakarta.validation.Valid;
@@ -22,9 +23,9 @@ public class CategoryController {
     }
 
     @PostMapping("/public/categories")
-    public ResponseEntity<String> createCategory(@Valid @RequestBody Category category) {
-        categoryService.createCategory(category);
-        return ResponseEntity.ok("Category added successfully");
+    public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
+        CategoryDTO savedCategoryDTO = categoryService.createCategory(categoryDTO);
+        return ResponseEntity.ok(savedCategoryDTO);
     }
 
     @DeleteMapping("/admin/categories/{categoryId}")
