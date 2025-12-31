@@ -2,6 +2,7 @@ package com.webstore.controller;
 
 import com.webstore.model.Category;
 import com.webstore.service.CategoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class CategoryController {
     }
 
     @PostMapping("/public/categories")
-    public ResponseEntity<String> createCategory(@RequestBody Category category) {
+    public ResponseEntity<String> createCategory(@Valid @RequestBody Category category) {
         categoryService.createCategory(category);
         return ResponseEntity.ok("Category added successfully");
     }
