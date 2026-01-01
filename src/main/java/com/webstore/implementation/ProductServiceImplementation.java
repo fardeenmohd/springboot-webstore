@@ -7,11 +7,14 @@ import com.webstore.payload.ProductDTO;
 import com.webstore.payload.ProductResponse;
 import com.webstore.repositories.CategoryRepository;
 import com.webstore.repositories.ProductRepository;
+import com.webstore.service.FileService;
 import com.webstore.service.ProductService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +25,8 @@ public class ProductServiceImplementation implements ProductService {
     private CategoryRepository categoryRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private FileService fileService;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -103,5 +108,19 @@ public class ProductServiceImplementation implements ProductService {
         ProductDTO deletedProductDTO = modelMapper.map(productToDelete, ProductDTO.class);
 
         return deletedProductDTO;
+    }
+
+    @Override
+    public ProductDTO updateProductImage(Long productId, MultipartFile image) throws IOException {
+        Product productToUpdate = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+
+        String fileName = fileService.uploadImage(image);
+
+        productToUpdate.setImage(fileName);
+
+        Product updatedProduct = productRepository.save(productToUpdate);
+        ProductDTO updatedProductDTO = modelMapper.map(updatedProduct, ProductDTO.class);
+
+        return updatedProductDTO;
     }
 }
