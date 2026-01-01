@@ -85,21 +85,40 @@ public class ProductServiceImplementation implements ProductService {
     }
 
     @Override
-    public ProductResponse getProductsByCategory(Long categoryId) {
+    public ProductResponse getProductsByCategory(Long categoryId, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
 
-        List<Product> productList = productRepository.findByCategoryOrderByPriceAsc(category);
+        Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc") ?
+                Sort.by(sortBy).ascending() :
+                Sort.by(sortBy).descending();
+
+        Pageable pagination = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
+        Page<Product> productPages = productRepository.findByCategoryOrderByPriceAsc(category, pagination);
+
+        List<Product> productList = productPages.getContent();
         List<ProductDTO> productDTOList = productList.stream().map((product) -> modelMapper.map(product, ProductDTO.class)).collect(Collectors.toList());
 
         ProductResponse productResponse = new ProductResponse();
         productResponse.setContent(productDTOList);
+        productResponse.setPageNumber(productPages.getNumber());
+        productResponse.setPageSize(productPages.getSize());
+        productResponse.setTotalElements(productPages.getTotalElements());
+        productResponse.setTotalPages(productPages.getTotalPages());
+        productResponse.setLastPage(productPages.isLast());
 
         return productResponse;
     }
 
     @Override
-    public ProductResponse getProductsByName(String name) {
-        List<Product> productList = productRepository.findByNameLikeIgnoreCase('%' + name + '%');
+    public ProductResponse getProductsByName(String name, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+        Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc") ?
+                Sort.by(sortBy).ascending() :
+                Sort.by(sortBy).descending();
+
+        Pageable pagination = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
+        Page<Product> productPages = productRepository.findByNameLikeIgnoreCase('%' + name + '%', pagination);
+
+        List<Product> productList = productPages.getContent();
         List<ProductDTO> productDTOList = productList.stream().map((product) -> modelMapper.map(product, ProductDTO.class)).collect(Collectors.toList());
 
         if (productList.isEmpty()) {
@@ -108,6 +127,11 @@ public class ProductServiceImplementation implements ProductService {
 
         ProductResponse productResponse = new ProductResponse();
         productResponse.setContent(productDTOList);
+        productResponse.setPageNumber(productPages.getNumber());
+        productResponse.setPageSize(productPages.getSize());
+        productResponse.setTotalElements(productPages.getTotalElements());
+        productResponse.setTotalPages(productPages.getTotalPages());
+        productResponse.setLastPage(productPages.isLast());
 
         return productResponse;
     }
