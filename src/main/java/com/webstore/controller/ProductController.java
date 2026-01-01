@@ -1,6 +1,5 @@
 package com.webstore.controller;
 
-import com.webstore.model.Product;
 import com.webstore.payload.ProductDTO;
 import com.webstore.payload.ProductResponse;
 import com.webstore.service.ProductService;
@@ -16,9 +15,9 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping("/admin/categories/{categoryId}/product")
-    public ResponseEntity<ProductDTO> addProduct(@RequestBody Product product, @PathVariable Long categoryId) {
-        ProductDTO productDTO = productService.addProduct(categoryId, product);
-        return new ResponseEntity<ProductDTO>(productDTO, HttpStatus.CREATED);
+    public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO, @PathVariable Long categoryId) {
+        ProductDTO createdProduct = productService.addProduct(categoryId, productDTO);
+        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 
     @GetMapping("/admin/products")
@@ -40,14 +39,14 @@ public class ProductController {
     }
 
     @PutMapping("/admin/products")
-    public ResponseEntity<ProductDTO> updateProduct(@RequestBody Product product) {
-        ProductDTO productDTO = productService.updateProduct(product);
-        return new ResponseEntity<>(productDTO, HttpStatus.OK);
+    public ResponseEntity<ProductDTO> updateProduct(@RequestBody ProductDTO productDTO) {
+        ProductDTO updatedProductDTO = productService.updateProduct(productDTO);
+        return new ResponseEntity<>(updatedProductDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/admin/products/{productId}")
     public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Long productId) {
         ProductDTO deletedProductDTO = productService.deleteProduct(productId);
-        return new ResponseEntity<ProductDTO>(deletedProductDTO, HttpStatus.OK);
+        return new ResponseEntity<>(deletedProductDTO, HttpStatus.OK);
     }
 }

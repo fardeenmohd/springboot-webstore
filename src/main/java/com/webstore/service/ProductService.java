@@ -1,11 +1,10 @@
 package com.webstore.service;
 
-import com.webstore.model.Product;
 import com.webstore.payload.ProductDTO;
 import com.webstore.payload.ProductResponse;
 
 public interface ProductService {
-    ProductDTO addProduct(Long categoryId, Product product);
+    ProductDTO addProduct(Long categoryId, ProductDTO productDTO);
 
     ProductResponse getProducts();
 
@@ -13,7 +12,7 @@ public interface ProductService {
 
     ProductResponse getProductsByName(String name);
 
-    ProductDTO updateProduct(Product product);
+    ProductDTO updateProduct(ProductDTO productDTO);
 
     ProductDTO deleteProduct(Long productId);
 }
