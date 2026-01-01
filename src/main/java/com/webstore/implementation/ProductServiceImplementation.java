@@ -64,4 +64,15 @@ public class ProductServiceImplementation implements ProductService {
 
         return productResponse;
     }
+
+    @Override
+    public ProductResponse getProductsByName(String name) {
+        List<Product> productList = productRepository.findByNameLikeIgnoreCase('%' + name + '%');
+        List<ProductDTO> productDTOList = productList.stream().map((product) -> modelMapper.map(product, ProductDTO.class)).collect(Collectors.toList());
+
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setContent(productDTOList);
+
+        return productResponse;
+    }
 }
