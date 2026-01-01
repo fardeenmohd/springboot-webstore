@@ -1,5 +1,6 @@
 package com.webstore.controller;
 
+import com.webstore.config.AppConstants;
 import com.webstore.payload.ProductDTO;
 import com.webstore.payload.ProductResponse;
 import com.webstore.service.ProductService;
@@ -25,8 +26,13 @@ public class ProductController {
     }
 
     @GetMapping("/admin/products")
-    public ResponseEntity<ProductResponse> getProducts() {
-        ProductResponse productResponse = productService.getProducts();
+    public ResponseEntity<ProductResponse> getProducts(
+            @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER) Integer pageNumber,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_BY) String sortBy,
+            @RequestParam(name = "sortOrder", defaultValue = AppConstants.SORT_ORDER) String sortOrder
+    ) {
+        ProductResponse productResponse = productService.getProducts(pageNumber, pageSize, sortBy, sortOrder);
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
 
