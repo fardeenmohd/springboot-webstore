@@ -1,6 +1,8 @@
 package com.webstore.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +16,10 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
+    @Size(min = 3, message = "Product name must contain at least 3 character")
     private String name;
+    @Size(min = 6, message = "Product description must contain at least 3 character")
     private String description;
     private String image;
     private Integer quantity;

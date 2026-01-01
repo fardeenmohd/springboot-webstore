@@ -1,5 +1,6 @@
 package com.webstore.implementation;
 
+import com.webstore.exceptions.ApiException;
 import com.webstore.exceptions.ResourceNotFoundException;
 import com.webstore.model.Category;
 import com.webstore.model.Product;
@@ -33,8 +34,13 @@ public class ProductServiceImplementation implements ProductService {
     @Override
     public ProductDTO addProduct(Long categoryId, ProductDTO productDTO) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
-
         Product product = modelMapper.map(productDTO, Product.class);
+
+        List<Product> sameProduct = productRepository.findByName(product.getName());
+        if (sameProduct.isEmpty()) {
+            throw new ApiException("Product with name " + product.getName() + " already exists");
+        }
+
         product.setImage("default.png");
         product.setCategory(category);
         double specialPrice = product.getPrice() - (product.getPrice() * (0.01 * product.getDiscount()));
@@ -51,6 +57,10 @@ public class ProductServiceImplementation implements ProductService {
     public ProductResponse getProducts() {
         List<Product> productList = productRepository.findAll();
         List<ProductDTO> productDTOList = productList.stream().map((product) -> modelMapper.map(product, ProductDTO.class)).collect(Collectors.toList());
+
+        if (productList.isEmpty()) {
+            throw new ApiException("No products exist");
+        }
 
         ProductResponse productResponse = new ProductResponse();
         productResponse.setContent(productDTOList);
@@ -75,6 +85,10 @@ public class ProductServiceImplementation implements ProductService {
     public ProductResponse getProductsByName(String name) {
         List<Product> productList = productRepository.findByNameLikeIgnoreCase('%' + name + '%');
         List<ProductDTO> productDTOList = productList.stream().map((product) -> modelMapper.map(product, ProductDTO.class)).collect(Collectors.toList());
+
+        if (productList.isEmpty()) {
+            throw new ApiException("No products exist");
+        }
 
         ProductResponse productResponse = new ProductResponse();
         productResponse.setContent(productDTOList);
