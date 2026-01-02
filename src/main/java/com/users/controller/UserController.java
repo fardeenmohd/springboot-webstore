@@ -7,6 +7,7 @@ import com.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,6 +17,7 @@ public class UserController {
 
     private final UserService userService;
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/admin/user/{id}")
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
         UserDTO fetchedUserDTO = userService.getUserById(id);
@@ -47,6 +49,7 @@ public class UserController {
         return new ResponseEntity<>(createdUserDTO, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/admin/user")
     public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDTO) {
         UserDTO updatedUserDTO = userService.updateUser(userDTO);
