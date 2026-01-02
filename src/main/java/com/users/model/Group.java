@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity(name = "groups")
+@Entity(name = "social_groups")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

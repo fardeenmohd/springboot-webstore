@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
-@Entity(name = "posts")
+@Entity(name = "social_posts")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
