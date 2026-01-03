@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class WebstoreApplication {
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(WebstoreApplication.class);
-        app.setAdditionalProfiles("webstore");
         app.run(args);
     }
 }
