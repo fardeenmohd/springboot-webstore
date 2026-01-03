@@ -59,11 +59,14 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "user",
             cascade = {CascadeType.MERGE, CascadeType.PERSIST},
             orphanRemoval = true)
     private Set<Product> products;
 
+    @Getter
+    @Setter
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "user_address",
             joinColumns = @JoinColumn(name = "user_id"),
