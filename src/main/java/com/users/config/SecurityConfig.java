@@ -3,6 +3,7 @@ package com.users.config;
 import com.users.jwt.AuthEntryPointJwt;
 import com.users.jwt.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,7 +45,7 @@ public class SecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(requests -> requests
                 .requestMatchers("/h2-console/**").permitAll()
-                .requestMatchers("/api/login").permitAll()
+                .requestMatchers("/login").permitAll()
                 .anyRequest().authenticated());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
@@ -62,22 +63,27 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        UserDetails user = User.withUsername("user")
-                .password(passwordEncoder().encode("password"))
-                .roles("USER")
-                .build();
+        return new JdbcUserDetailsManager(dataSource);
+    }
 
-        UserDetails admin = User.withUsername("admin")
-                .password(passwordEncoder().encode("admin"))
-                .roles("ADMIN")
-                .build();
+    @Bean
+    public CommandLineRunner initData(UserDetailsService userDetailsService) {
+        return args -> {
+            JdbcUserDetailsManager manager = (JdbcUserDetailsManager) userDetailsService();
+            UserDetails user = User.withUsername("user")
+                    .password(passwordEncoder().encode("password"))
+                    .roles("USER")
+                    .build();
 
-        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
+            UserDetails admin = User.withUsername("admin")
+                    .password(passwordEncoder().encode("admin"))
+                    .roles("ADMIN")
+                    .build();
 
-        userDetailsManager.createUser(user);
-        userDetailsManager.createUser(admin);
 
-        return userDetailsManager;
+            manager.createUser(user);
+            manager.createUser(admin);
+        };
     }
 
     @Bean
