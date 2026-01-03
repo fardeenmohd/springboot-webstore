@@ -78,7 +78,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<> authenticateUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         Authentication authentication;
 
         try {
