@@ -53,6 +53,14 @@ public class JwtUtils {
         return cookie;
     }
 
+    public ResponseCookie getCleanJwtCookie() {
+        ResponseCookie cookie = ResponseCookie.from(jwtCookie, null)
+                .path("/api")
+                .httpOnly(false).build();
+
+        return cookie;
+    }
+
     public String generateTokenFromUsername(String username) {
 
         return Jwts.builder().subject(username).issuedAt(new Date())
