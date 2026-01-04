@@ -1,8 +1,14 @@
 package com.webstore.security;
 
+import com.webstore.model.AppRole;
+import com.webstore.model.Role;
+import com.webstore.model.User;
+import com.webstore.repositories.RoleRepository;
+import com.webstore.repositories.UserRepository;
 import com.webstore.security.jwt.AuthEntryPointJwt;
 import com.webstore.security.jwt.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,6 +46,7 @@ public class WebSecurityConfig {
         return authenticationProvider;
     }
 
+    @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) {
         return authenticationConfiguration.getAuthenticationManager();
     }
@@ -81,9 +88,50 @@ public class WebSecurityConfig {
                 .requestMatchers("/v2/api-docs",
                         "/configuration/ui",
                         "/swagger-resources",
-                        "configuration/security",
+                        "/configuration/security",
                         "/swagger-ui.html",
                         "/webjars/**"
                 ));
+    }
+
+    @Bean
+    public CommandLineRunner initData(RoleRepository roleRepository, UserRepository userRepository) {
+        return args -> {
+            Role userRole = roleRepository.findByRoleName(AppRole.ROLE_USER)
+                    .orElseGet(() -> {
+                        Role newUserRole = new Role(AppRole.ROLE_USER);
+
+                        return roleRepository.save(newUserRole);
+                    });
+
+            Role sellerRole = roleRepository.findByRoleName(AppRole.ROLE_SELLER)
+                    .orElseGet(() -> {
+                        Role newSellerRole = new Role(AppRole.ROLE_SELLER);
+
+                        return roleRepository.save(newSellerRole);
+                    });
+
+            Role adminRole = roleRepository.findByRoleName(AppRole.ROLE_ADMIN)
+                    .orElseGet(() -> {
+                        Role newAdminRole = new Role(AppRole.ROLE_ADMIN);
+
+                        return roleRepository.save(newAdminRole);
+                    });
+
+            if (!userRepository.existsByUserName("admin")) {
+                User admin = new User("admin", "admin@email.com", passwordEncoder().encode("admin"));
+                userRepository.save(admin);
+            }
+
+            if (!userRepository.existsByUserName("seller")) {
+                User seller = new User("seller", "seller@email.com", passwordEncoder().encode("seller"));
+                userRepository.save(seller);
+            }
+
+            if (!userRepository.existsByUserName("user")) {
+                User user = new User("user", "user@email.com", passwordEncoder().encode("user"));
+                userRepository.save(user);
+            }
+        };
     }
 }
