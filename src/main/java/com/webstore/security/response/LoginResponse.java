@@ -1,16 +1,19 @@
 package com.webstore.security.response;
 
+import org.springframework.http.ResponseCookie;
+
 import java.util.List;
 
 public class LoginResponse {
     private Long id;
-    private String jwtToken;
     private String username;
     private List<String> roles;
+    private ResponseCookie jwtCookie;
 
-    public LoginResponse(Long id, String jwtToken, String username, List<String> roles) {
+
+    public LoginResponse(Long id, ResponseCookie jwtCookie, String username, List<String> roles) {
         this.id = id;
-        this.jwtToken = jwtToken;
+        this.jwtCookie = jwtCookie;
         this.username = username;
         this.roles = roles;
     }
@@ -23,12 +26,12 @@ public class LoginResponse {
         this.id = id;
     }
 
-    public String getJwtToken() {
-        return jwtToken;
+    public ResponseCookie getJwtCookie() {
+        return jwtCookie;
     }
 
-    public void setJwtToken(String jwtToken) {
-        this.jwtToken = jwtToken;
+    public void setJwtCookie(ResponseCookie jwtCookie) {
+        this.jwtCookie = jwtCookie;
     }
 
     public String getUsername() {
