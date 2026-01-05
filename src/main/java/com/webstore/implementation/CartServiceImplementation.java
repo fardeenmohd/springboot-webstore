@@ -12,6 +12,7 @@ import com.webstore.repositories.CartRepository;
 import com.webstore.repositories.ProductRepository;
 import com.webstore.service.CartService;
 import com.webstore.util.AuthUtil;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,10 @@ public class CartServiceImplementation implements CartService {
 
         if (cartItem != null) {
             throw new ApiException("Product " + product.getName() + " already in cart");
+        }
+
+        if (product.getQuantity() == 0) {
+            throw new ApiException("Product " + product.getName() + " is out of stock");
         }
 
         if (product.getQuantity() < quantity) {
@@ -113,10 +118,59 @@ public class CartServiceImplementation implements CartService {
 
         CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
         cart.getCartItems().forEach(c -> c.getProduct().setQuantity(c.getQuantity()));
-        
+
         List<ProductDTO> products = cart.getCartItems().stream()
                 .map(p -> modelMapper.map(p.getProduct(), ProductDTO.class)).collect(Collectors.toList());
         cartDTO.setProducts(products);
+
+        return cartDTO;
+    }
+
+    @Override
+    @Transactional
+    public CartDTO updateProductQuantityInCart(Long productId, Integer quantity) {
+        String email = authUtil.loggedInEmail();
+        Cart userCart = cartRepository.findCartByEmail(email);
+        Long cartId = userCart.getId();
+
+        Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new ResourceNotFoundException("Cart", "cartId", cartId));
+
+        Product product = productRepository.findById(productId).orElseThrow(() ->
+                new ResourceNotFoundException("Product", "productId", productId));
+
+        if (product.getQuantity() == 0) {
+            throw new ApiException("Product " + product.getName() + " is out of stock");
+        }
+
+        if (product.getQuantity() < quantity) {
+            throw new ApiException("Please, make an order of the " + product.getName() + " less than or equal to " + product.getQuantity());
+        }
+
+        CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartId(cartId, productId);
+        if (cartItem == null) {
+            throw new ApiException("Product " + product.getName() + " is out of stock");
+        }
+
+        cartItem.setPrice(product.getSpecialPrice());
+        cartItem.setQuantity(cartItem.getQuantity() + quantity);
+        cartItem.setDiscount(product.getDiscount());
+        cart.setTotalPrice(cart.getTotalPrice() + (cartItem.getPrice() * quantity));
+        cartRepository.save(cart);
+
+        CartItem updatedItem = cartItemRepository.save(cartItem);
+        if (updatedItem.getQuantity() == 0) {
+            cartItemRepository.deleteById(updatedItem.getId());
+        }
+
+        CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+        List<CartItem> cartItems = cart.getCartItems();
+        Stream<ProductDTO> productDTOStream = cartItems.stream().map(item ->
+        {
+            ProductDTO map = modelMapper.map(cartItem.getProduct(), ProductDTO.class);
+            map.setQuantity(item.getQuantity());
+            return map;
+        });
+        cartDTO.setProducts(productDTOStream.toList());
 
         return cartDTO;
     }

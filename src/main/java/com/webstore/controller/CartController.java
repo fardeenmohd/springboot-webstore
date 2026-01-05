@@ -48,4 +48,10 @@ public class CartController {
 
         return ResponseEntity.ok(cartDTO);
     }
+
+    @PutMapping("/cart/products/{productId}/quantity/{operation}")
+    public ResponseEntity<CartDTO> updateCart(@PathVariable Long productId, @PathVariable String operation) {
+        CartDTO cartDTO = cartService.updateProductQuantityInCart(productId, operation.equals("add") ? 1 : -1);
+        return new ResponseEntity<>(cartDTO, HttpStatus.OK);
+    }
 }
