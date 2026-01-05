@@ -151,11 +151,21 @@ public class CartServiceImplementation implements CartService {
             throw new ApiException("Product " + product.getName() + " is out of stock");
         }
 
-        cartItem.setPrice(product.getSpecialPrice());
-        cartItem.setQuantity(cartItem.getQuantity() + quantity);
-        cartItem.setDiscount(product.getDiscount());
-        cart.setTotalPrice(cart.getTotalPrice() + (cartItem.getPrice() * quantity));
-        cartRepository.save(cart);
+        int newQuantity = cartItem.getQuantity() + quantity;
+
+        if (newQuantity < 0) {
+            throw new ApiException("Quantity cannot be negative");
+        }
+
+        if (newQuantity == 0) {
+            deleteProductFromCart(cartId, productId);
+        } else {
+            cartItem.setPrice(product.getSpecialPrice());
+            cartItem.setQuantity(cartItem.getQuantity() + quantity);
+            cartItem.setDiscount(product.getDiscount());
+            cart.setTotalPrice(cart.getTotalPrice() + (cartItem.getPrice() * quantity));
+            cartRepository.save(cart);
+        }
 
         CartItem updatedItem = cartItemRepository.save(cartItem);
         if (updatedItem.getQuantity() == 0) {
@@ -175,6 +185,7 @@ public class CartServiceImplementation implements CartService {
         return cartDTO;
     }
 
+    @Transactional
     @Override
     public String deleteProductFromCart(Long cartId, Long productId) {
         Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new ResourceNotFoundException("Cart", "cartId", cartId));
