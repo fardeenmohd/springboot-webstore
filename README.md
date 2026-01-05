@@ -1,11 +1,12 @@
 # Webstore Project
 
-This is a webstore project built with Java and Spring Boot. It provides a RESTful API for managing products and
-categories, with user authentication and authorization.
+This is a webstore project built with Java and Spring Boot. It provides a RESTful API for managing products, categories,
+and a shopping cart, with user authentication and authorization.
 
 ## Key Features:
 
-* **RESTful API:** Exposes endpoints for creating, reading, updating, and deleting products and categories.
+* **RESTful API:** Exposes endpoints for creating, reading, updating, and deleting products, categories, and cart items.
+* **Shopping Cart:** Allows users to add, update, and remove items from their shopping cart.
 * **JPA Persistence:** Uses Spring Data JPA and Hibernate to interact with the database.
 * **In-Memory Database:** Utilizes an H2 in-memory database for development and testing purposes.
 * **User Authentication:** Secures the API with JWT-based authentication and Spring Security.
@@ -49,6 +50,8 @@ The application will be available at `http://localhost:8080`.
 
 ## API Reference
 
+Endpoints are grouped by resource type. Endpoints marked with a 🔒 require authentication.
+
 ### Categories
 
 #### Get All Categories
@@ -73,7 +76,7 @@ The application will be available at `http://localhost:8080`.
     * **Code:** 200 OK
     * **Content:** `CategoryDTO`
 
-#### Delete Category
+#### 🔒 Delete Category
 
 * **URL:** `/api/admin/categories/{categoryId}`
 * **Method:** `DELETE`
@@ -83,7 +86,7 @@ The application will be available at `http://localhost:8080`.
     * **Code:** 200 OK
     * **Content:** `CategoryDTO`
 
-#### Update Category
+#### 🔒 Update Category
 
 * **URL:** `/api/admin/categories`
 * **Method:** `PUT`
@@ -94,7 +97,7 @@ The application will be available at `http://localhost:8080`.
 
 ### Products
 
-#### Add Product
+#### 🔒 Add Product
 
 * **URL:** `/api/admin/categories/{categoryId}/product`
 * **Method:** `POST`
@@ -105,7 +108,7 @@ The application will be available at `http://localhost:8080`.
     * **Code:** 201 Created
     * **Content:** `ProductDTO`
 
-#### Get All Products
+#### 🔒 Get All Products
 
 * **URL:** `/api/admin/products`
 * **Method:** `GET`
@@ -118,7 +121,7 @@ The application will be available at `http://localhost:8080`.
     * **Code:** 200 OK
     * **Content:** `ProductResponse`
 
-#### Get Products by Category
+#### 🔒 Get Products by Category
 
 * **URL:** `/api/admin/categories/{categoryId}/products`
 * **Method:** `GET`
@@ -133,7 +136,7 @@ The application will be available at `http://localhost:8080`.
     * **Code:** 200 OK
     * **Content:** `ProductResponse`
 
-#### Get Products by Name
+#### 🔒 Get Products by Name
 
 * **URL:** `/api/admin/products/keyword/{name}`
 * **Method:** `GET`
@@ -148,7 +151,7 @@ The application will be available at `http://localhost:8080`.
     * **Code:** 200 OK
     * **Content:** `ProductResponse`
 
-#### Update Product
+#### 🔒 Update Product
 
 * **URL:** `/api/admin/products`
 * **Method:** `PUT`
@@ -157,7 +160,7 @@ The application will be available at `http://localhost:8080`.
     * **Code:** 200 OK
     * **Content:** `ProductDTO`
 
-#### Delete Product
+#### 🔒 Delete Product
 
 * **URL:** `/api/admin/products/{productId}`
 * **Method:** `DELETE`
@@ -167,7 +170,7 @@ The application will be available at `http://localhost:8080`.
     * **Code:** 200 OK
     * **Content:** `ProductDTO`
 
-#### Update Product Image
+#### 🔒 Update Product Image
 
 * **URL:** `/api/products/{productId}/image`
 * **Method:** `PUT`
@@ -178,3 +181,54 @@ The application will be available at `http://localhost:8080`.
 * **Success Response:**
     * **Code:** 200 OK
     * **Content:** `ProductDTO`
+
+### Cart
+
+#### 🔒 Add Product to Cart
+
+* **URL:** `/api/carts/products/{productId}/quantity/{quantity}`
+* **Method:** `POST`
+* **URL Parameters:**
+    * `productId` (required)
+    * `quantity` (required)
+* **Success Response:**
+    * **Code:** 201 Created
+    * **Content:** `CartDTO`
+
+#### 🔒 Get All Carts
+
+* **URL:** `/api/carts`
+* **Method:** `GET`
+* **Success Response:**
+    * **Code:** 200 OK
+    * **Content:** `List<CartDTO>`
+
+#### 🔒 Get Cart for Current User
+
+* **URL:** `/api/carts/users/cart`
+* **Method:** `GET`
+* **Success Response:**
+    * **Code:** 200 OK
+    * **Content:** `CartDTO`
+
+#### 🔒 Update Product Quantity in Cart
+
+* **URL:** `/api/cart/products/{productId}/quantity/{operation}`
+* **Method:** `PUT`
+* **URL Parameters:**
+    * `productId` (required)
+    * `operation` (required, "add" or "remove")
+* **Success Response:**
+    * **Code:** 200 OK
+    * **Content:** `CartDTO`
+
+#### 🔒 Delete Product from Cart
+
+* **URL:** `/api/carts/{cartId}/product/{productId}`
+* **Method:** `DELETE`
+* **URL Parameters:**
+    * `cartId` (required)
+    * `productId` (required)
+* **Success Response:**
+    * **Code:** 200 OK
+    * **Content:** `String` (status message)
