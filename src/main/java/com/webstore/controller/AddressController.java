@@ -52,4 +52,11 @@ public class AddressController {
         AddressDTO savedAddressDTO = addressService.updateAddressById(addressId, addressDTO);
         return new ResponseEntity<>(savedAddressDTO, HttpStatus.OK);
     }
+
+    @DeleteMapping("addresses/{addressId}")
+    public ResponseEntity<AddressDTO> deleteAddressById(@PathVariable Long addressId) {
+        AddressDTO addressDTO = addressService.deleteAddressById(addressId);
+
+        return new ResponseEntity<>(addressDTO, HttpStatus.OK);
+    }
 }

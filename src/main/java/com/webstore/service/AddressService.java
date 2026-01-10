@@ -17,4 +17,6 @@ public interface AddressService {
     List<AddressDTO> getUserAddresses(User user);
 
     AddressDTO updateAddressById(Long addressId, @Valid AddressDTO addressDTO);
+
+    AddressDTO deleteAddressById(Long addressId);
 }
