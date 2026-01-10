@@ -32,4 +32,12 @@ public class AddressServiceImplementation implements AddressService {
 
         return modelMapper.map(savedAddress, AddressDTO.class);
     }
+
+    @Override
+    public List<AddressDTO> getAddresses() {
+        List<Address> addressList = addressRepository.findAll();
+        List<AddressDTO> addressDTOList = addressList.stream().map(address -> modelMapper.map(address, AddressDTO.class)).toList();
+
+        return addressDTOList;
+    }
 }
