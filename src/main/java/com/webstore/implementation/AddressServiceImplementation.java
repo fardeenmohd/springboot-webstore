@@ -5,6 +5,7 @@ import com.webstore.model.Address;
 import com.webstore.model.User;
 import com.webstore.payload.AddressDTO;
 import com.webstore.repositories.AddressRepository;
+import com.webstore.repositories.UserRepository;
 import com.webstore.service.AddressService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class AddressServiceImplementation implements AddressService {
 
     @Autowired
     AddressRepository addressRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Override
     public AddressDTO createAddress(AddressDTO addressDTO, User user) {
@@ -54,5 +58,25 @@ public class AddressServiceImplementation implements AddressService {
     public List<AddressDTO> getUserAddresses(User user) {
         List<Address> addresses = user.getAddresses();
         return addresses.stream().map(address -> modelMapper.map(address, AddressDTO.class)).toList();
+    }
+
+    @Override
+    public AddressDTO updateAddressById(Long addressId, AddressDTO addressDTO) {
+        Address addressFromDatabase = addressRepository.findById(addressId).orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", addressId));
+        addressFromDatabase.setBuildingName(addressDTO.getBuildingName());
+        addressFromDatabase.setCity(addressDTO.getCity());
+        addressFromDatabase.setCountry(addressDTO.getCountry());
+        addressFromDatabase.setCode(addressDTO.getCode());
+        addressFromDatabase.setStreet(addressDTO.getStreet());
+        addressFromDatabase.setState(addressDTO.getState());
+
+        Address updatedAddress = addressRepository.save(addressFromDatabase);
+
+        User user = addressFromDatabase.getUser();
+        user.getAddresses().removeIf(address -> address.getId().equals(addressFromDatabase.getId()));
+        user.getAddresses().add(updatedAddress);
+        userRepository.save(user);
+
+        return modelMapper.map(updatedAddress, AddressDTO.class);
     }
 }
