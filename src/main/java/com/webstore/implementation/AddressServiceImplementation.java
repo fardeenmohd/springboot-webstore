@@ -1,5 +1,6 @@
 package com.webstore.implementation;
 
+import com.webstore.exceptions.ResourceNotFoundException;
 import com.webstore.model.Address;
 import com.webstore.model.User;
 import com.webstore.payload.AddressDTO;
@@ -39,5 +40,13 @@ public class AddressServiceImplementation implements AddressService {
         List<AddressDTO> addressDTOList = addressList.stream().map(address -> modelMapper.map(address, AddressDTO.class)).toList();
 
         return addressDTOList;
+    }
+
+    @Override
+    public AddressDTO getAddressById(Long addressId) {
+        Address address = addressRepository.findById(addressId).orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", addressId));
+        AddressDTO addressDTO = modelMapper.map(address, AddressDTO.class);
+
+        return addressDTO;
     }
 }
