@@ -1,12 +1,15 @@
 # Webstore Project
 
 This is a webstore project built with Java and Spring Boot. It provides a RESTful API for managing products, categories,
-and a shopping cart, with user authentication and authorization.
+a shopping cart, and orders, with user authentication and authorization.
 
 ## Key Features:
 
-* **RESTful API:** Exposes endpoints for creating, reading, updating, and deleting products, categories, and cart items.
+* **RESTful API:** Exposes endpoints for creating, reading, updating, and deleting products, categories, cart items, and
+  orders.
 * **Shopping Cart:** Allows users to add, update, and remove items from their shopping cart.
+* **Order Processing:** Enables users to place orders from their shopping cart.
+* **Address Management:** Allows users to manage their shipping addresses.
 * **JPA Persistence:** Uses Spring Data JPA and Hibernate to interact with the database.
 * **In-Memory Database:** Utilizes an H2 in-memory database for development and testing purposes.
 * **User Authentication:** Secures the API with JWT-based authentication and Spring Security.
@@ -232,3 +235,74 @@ Endpoints are grouped by resource type. Endpoints marked with a 🔒 require aut
 * **Success Response:**
     * **Code:** 200 OK
     * **Content:** `String` (status message)
+
+### Orders
+
+#### 🔒 Place Order
+
+* **URL:** `/api/order/users/payments/{paymentMethod}`
+* **Method:** `POST`
+* **URL Parameters:**
+    * `paymentMethod` (required)
+* **Request Body:** `OrderRequestDTO`
+* **Success Response:**
+    * **Code:** 200 OK
+    * **Content:** `OrderDTO`
+
+### Addresses
+
+#### 🔒 Create Address
+
+* **URL:** `/api/addresses`
+* **Method:** `POST`
+* **Request Body:** `AddressDTO`
+* **Success Response:**
+    * **Code:** 201 Created
+    * **Content:** `AddressDTO`
+
+#### 🔒 Get All Addresses
+
+* **URL:** `/api/addresses`
+* **Method:** `GET`
+* **Success Response:**
+    * **Code:** 200 OK
+    * **Content:** `List<AddressDTO>`
+
+#### 🔒 Get Address by ID
+
+* **URL:** `/api/addresses/{addressId}`
+* **Method:** `GET`
+* **URL Parameters:**
+    * `addressId` (required)
+* **Success Response:**
+    * **Code:** 200 OK
+    * **Content:** `AddressDTO`
+
+#### 🔒 Get Addresses for Current User
+
+* **URL:** `/api/users/addresses`
+* **Method:** `GET`
+* **Success Response:**
+    * **Code:** 200 OK
+    * **Content:** `List<AddressDTO>`
+
+#### 🔒 Update Address by ID
+
+* **URL:** `/api/addresses/{addressId}`
+* **Method:** `PUT`
+* **URL Parameters:**
+    * `addressId` (required)
+* **Request Body:** `AddressDTO`
+* **Success Response:**
+    * **Code:** 200 OK
+    * **Content:** `AddressDTO`
+
+#### 🔒 Delete Address by ID
+
+* **URL:** `/api/addresses/{addressId}`
+* **Method:** `DELETE`
+* **URL Parameters:**
+    * `addressId` (required)
+* **Success Response:**
+    * **Code:** 200 OK
+    * **Content:** `AddressDTO`
