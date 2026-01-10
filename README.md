@@ -11,7 +11,7 @@ a shopping cart, and orders, with user authentication and authorization.
 * **Order Processing:** Enables users to place orders from their shopping cart.
 * **Address Management:** Allows users to manage their shipping addresses.
 * **JPA Persistence:** Uses Spring Data JPA and Hibernate to interact with the database.
-* **In-Memory Database:** Utilizes an H2 in-memory database for development and testing purposes.
+* **MySQL Database:** Utilizes a MySQL database for data storage.
 * **User Authentication:** Secures the API with JWT-based authentication and Spring Security.
 * **Input Validation:** Ensures data integrity with Spring Validation.
 
@@ -22,7 +22,7 @@ a shopping cart, and orders, with user authentication and authorization.
     * `spring-boot-starter-data-jpa`: For data persistence using JPA and Hibernate.
     * `spring-boot-starter-security`: For authentication and authorization.
     * `spring-boot-starter-validation`: For data validation.
-* **H2 Database:** An in-memory database for development and testing.
+* **MySQL:** A relational database for data storage.
 * **Lombok:** A library to reduce boilerplate code for model and data objects.
 * **ModelMapper:** A library for object mapping between DTOs and entities.
 * **JSON Web Token (JJWT):** For creating and validating JWTs for user authentication.
@@ -33,6 +33,18 @@ a shopping cart, and orders, with user authentication and authorization.
 
 * Java 25
 * Maven
+* MySQL
+
+### Database Configuration
+
+1. Create a MySQL database named `webstore`.
+2. Update the `application.properties` file with your MySQL username and password:
+
+   ```properties
+   spring.datasource.url=jdbc:mysql://localhost:3306/webstore
+   spring.datasource.username=your-username
+   spring.datasource.password=your-password
+   ```
 
 ### Running the Application
 
